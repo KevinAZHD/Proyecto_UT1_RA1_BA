@@ -53,7 +53,7 @@ def main():
     datos_estaciones = generar_datos_estaciones(NUM_REGISTROS)
     
     # Genera un nombre de archivo con fecha y hora para asegurar que sea único.
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    timestamp = datetime.now().strftime('%Y%m%d')
     nombre_archivo = f"estaciones_{timestamp}.json"
     ruta_salida = DIRECTORIO_SALIDA / nombre_archivo
     
