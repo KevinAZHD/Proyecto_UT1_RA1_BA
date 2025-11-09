@@ -1,0 +1,29 @@
+# Entornos virtuales y dependencias
+venv/
+site/node_modules/
+
+# Archivos de caché y compilados de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Carpetas de datos generados por el pipeline
+/data/drops/
+/data/quarantine/
+/data/storage/
+
+# Carpeta de salida de reportes
+/output/
+
+# Archivos de caché y build del sitio Quartz
+site/public/
+site/quartz/.quartz-cache/
+
+# Archivos específicos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de configuración de IDEs
+.vscode/
+.idea/
