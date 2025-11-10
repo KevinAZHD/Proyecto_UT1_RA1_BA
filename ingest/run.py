@@ -57,7 +57,25 @@ def ingerir_datos(ts_ingesta: datetime, id_batch: str) -> pd.DataFrame:
 def almacenar_en_bronze(df: pd.DataFrame):
     # Guarda el DataFrame crudo en la capa Bronze.
     df['ingest_date'] = df['_ingest_ts'].dt.date
-    df.astype(str).to_parquet(DIR_BRONZE, partition_cols=['ingest_date'], engine='pyarrow')
+    df_existente = pd.DataFrame()
+    
+    if DIR_BRONZE.exists():
+        try:
+            df_existente = pd.read_parquet(DIR_BRONZE, engine='pyarrow')
+            df_existente['_ingest_ts'] = pd.to_datetime(df_existente['_ingest_ts'])
+            df_existente['extraction_date'] = pd.to_datetime(df_existente['extraction_date']).dt.date
+            df_existente['ingest_date'] = pd.to_datetime(df_existente['ingest_date']).dt.date
+        except:
+            pass
+    
+    df_combinado = pd.concat([df_existente, df], ignore_index=True)
+    df_combinado = df_combinado.sort_values(by='_ingest_ts').drop_duplicates(subset=['id', 'extraction_date'], keep='last')
+    
+    if DIR_BRONZE.exists():
+        shutil.rmtree(DIR_BRONZE)
+    DIR_BRONZE.mkdir()
+    
+    df_combinado.astype(str).to_parquet(DIR_BRONZE, partition_cols=['ingest_date'], engine='pyarrow')
 
 def limpiar_y_validar_datos(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     # Limpia, valida y separa el DataFrame en registros válidos e inválidos.
